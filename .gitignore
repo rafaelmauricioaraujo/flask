@@ -131,3 +131,6 @@ dmypy.json
 # Virtualenv stuff
 /Scripts
 pyvenv.cfg
+
+# VS Code stuff
+.vscode

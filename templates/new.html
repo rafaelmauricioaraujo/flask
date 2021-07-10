@@ -10,21 +10,21 @@
       <div class="page-header">
           <h1>{{ titulo }}</h1>
       </div>
-      <form>
+      <form action="/create" method="POST">
         <fieldset>
           <div class="form-group">
-            <label for="nome">Name</label>
-            <input type="text" id="nome" name="nome" class="form-control">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" class="form-control">
           </div>
           <div class="form-group">
-            <label for="categoria">Category</label>
-            <input type="text" id="categoria" name="categoria" class="form-control">
+            <label for="category">Category</label>
+            <input type="text" id="category" name="category" class="form-control">
           </div>
           <div class="form-group">
             <label for="console">Console</label>
             <input type="text" id="console" name="console" class="form-control">
           </div>
-          <button type="submit" class="btn btn-primary btn-salvar">Save</button>
+          <button type="submit" class="btn btn-primary btn-save">Save</button>
         </fieldset>
       </form>
     </div>

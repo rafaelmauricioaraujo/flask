@@ -13,7 +13,7 @@ game2 = Game('Pokemon Gold', 'RPG', 'GBA')
 game3 = Game('Mortal Combat', 'Action', 'SNES')
 game_list = [game1, game2, game3]
 
-@app.route('/home')
+@app.route('/')
 def home():
     return render_template('list.html',title='Games',game_list=game_list)
 
@@ -21,7 +21,7 @@ def home():
 def new():
     return render_template('new.html', title='New Game')
 
-@app.route('/create')
+@app.route('/create', methods=['POST'])
 def create():
     name = request.form['name']
     category = request.form['category']
@@ -33,5 +33,5 @@ def create():
     return render_template('list.html', title='Games', game_list=game_list)
 
 
-app.run()
+app.run(debug=True)
 

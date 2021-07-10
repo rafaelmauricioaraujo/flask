@@ -10,11 +10,16 @@ class Game:
 
 
 @app.route('/home')
-def ola():
+def home():
     game1 = Game('Super-Mario', 'Adventure', 'NES')
     game2 = Game('Pokemon Gold', 'RPG', 'GBA')
     game3 = Game('Mortal Combat', 'Action', 'SNES')
     game_list = [game1, game2, game3]
     return render_template('list.html',title='Games',game_list=game_list)
+
+@app.route('/new')
+def new():
+    return render_template('new.html', title='New Game')
+
 
 app.run()

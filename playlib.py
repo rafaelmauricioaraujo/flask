@@ -14,13 +14,18 @@ game2 = Game('Pokemon Gold', 'RPG', 'GBA')
 game3 = Game('Mortal Combat', 'Action', 'SNES')
 game_list = [game1, game2, game3]
 
+
 @app.route('/')
 def home():
     return render_template('list.html',title='Games',game_list=game_list)
 
+
 @app.route('/new')
 def new():
+    if 'user_logged' not in session or session['user_logged'] == None:
+        return redirect('/login')
     return render_template('new.html', title='New Game')
+
 
 @app.route('/create', methods=['POST'])
 def create():
@@ -33,9 +38,11 @@ def create():
 
     return redirect('/')
 
+
 @app.route('/login')
 def login():
     return render_template('login.html')
+
 
 @app.route('/auth', methods=['POST'])
 def auth():
@@ -47,6 +54,7 @@ def auth():
         flash('user or password incorrect!')
         return redirect('/login')
 
+
 @app.route('/logout')
 def logout():
     session['user_logged'] = None
@@ -55,4 +63,3 @@ def logout():
 
 
 app.run(debug=True)
-

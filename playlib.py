@@ -47,5 +47,12 @@ def auth():
         flash('user or password incorrect!')
         return redirect('/login')
 
+@app.route('/logout')
+def logout():
+    session['user_logged'] = None
+    flash('User logout')
+    return redirect('/')
+
+
 app.run(debug=True)
 

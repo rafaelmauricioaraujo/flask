@@ -32,6 +32,16 @@ def create():
 
     return redirect('/')
 
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+@app.route('/auth', methods=['POST'])
+def auth():
+    if 'root' == request.form['password']:
+        return redirect('/')
+    else:
+        return redirect('/login')
 
 app.run(debug=True)
 

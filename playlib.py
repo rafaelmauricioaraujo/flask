@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session, flash
 
 app = Flask(__name__)
+app.secret_key = 'playlib_secrect'
 
 class Game:
     def __init__(self, name, category, console):
@@ -39,8 +40,11 @@ def login():
 @app.route('/auth', methods=['POST'])
 def auth():
     if 'root' == request.form['password']:
+        session['user_logged'] = request.form['user']
+        flash(request.form['user'] + ' logged!')
         return redirect('/')
     else:
+        flash('user or password incorrect!')
         return redirect('/login')
 
 app.run(debug=True)

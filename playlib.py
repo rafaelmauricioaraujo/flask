@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, session, flash
+from flask import Flask, render_template, request, redirect, session, flash, \
+    url_for
 
 app = Flask(__name__)
 app.secret_key = 'playlib_secrect'
@@ -14,16 +15,30 @@ game2 = Game('Pokemon Gold', 'RPG', 'GBA')
 game3 = Game('Mortal Combat', 'Action', 'SNES')
 game_list = [game1, game2, game3]
 
+class User:
+    def __init__(self, id, name, password):
+        self.id = id
+        self.name = name
+        self.password = password
+
+user1 = User('rafael', 'Rafael', '123' )
+user2 = User('teti', 'Teti', '456' )
+user3 = User('flavio', 'Flavio', 'js')
+
+users = { user1.id: user1, 
+          user2.id: user2,
+          user3.id: user3 }
+
 
 @app.route('/')
-def home():
+def index():
     return render_template('list.html',title='Games',game_list=game_list)
 
 
 @app.route('/new')
 def new():
     if 'user_logged' not in session or session['user_logged'] == None:
-        return redirect('/login?next=new')
+        return redirect(url_for('login', next=url_for('new')))
     return render_template('new.html', title='New Game')
 
 
@@ -36,7 +51,7 @@ def create():
     game = Game(name, category, console)
     game_list.append(game)
 
-    return redirect('/')
+    return redirect(url_for('index'))
 
 
 @app.route('/login')
@@ -47,21 +62,23 @@ def login():
 
 @app.route('/auth', methods=['POST'])
 def auth():
-    if 'root' == request.form['password']:
-        session['user_logged'] = request.form['user']
-        flash(request.form['user'] + ' logged!')
-        next_page = request.form['next']
-        return redirect('/{}'.format(next_page))
+    if request.form['user'] in users:
+        user = users[request.form['user']]
+        if user.password == request.form['password']:
+            session['user_logged'] = user.id
+            flash(user.name + ' logged!')
+            next_page = request.form['next']
+            return redirect(next_page)
     else:
         flash('user or password incorrect!')
-        return redirect('/login')
+        return redirect(url_for('login'))
 
 
 @app.route('/logout')
 def logout():
     session['user_logged'] = None
     flash('User logout')
-    return redirect('/')
+    return redirect(url_for('index'))
 
 
 app.run(debug=True)

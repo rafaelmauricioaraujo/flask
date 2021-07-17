@@ -23,7 +23,7 @@ def home():
 @app.route('/new')
 def new():
     if 'user_logged' not in session or session['user_logged'] == None:
-        return redirect('/login')
+        return redirect('/login?next=new')
     return render_template('new.html', title='New Game')
 
 
@@ -41,7 +41,8 @@ def create():
 
 @app.route('/login')
 def login():
-    return render_template('login.html')
+    next = request.args.get('next')
+    return render_template('login.html', next=next)
 
 
 @app.route('/auth', methods=['POST'])
@@ -49,7 +50,8 @@ def auth():
     if 'root' == request.form['password']:
         session['user_logged'] = request.form['user']
         flash(request.form['user'] + ' logged!')
-        return redirect('/')
+        next_page = request.form['next']
+        return redirect('/{}'.format(next_page))
     else:
         flash('user or password incorrect!')
         return redirect('/login')

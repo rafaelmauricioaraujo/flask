@@ -1,62 +1,61 @@
 from playlib import Game, User
 
-SQL_DELETA_JOGO = 'delete from jogo where id = %s'
-SQL_JOGO_POR_ID = 'SELECT id, nome, categoria, console from jogo where id = %s'
-SQL_USUARIO_POR_ID = 'SELECT id, nome, senha from usuario where id = %s'
-SQL_ATUALIZA_JOGO = 'UPDATE jogo SET nome=%s, categoria=%s, console=%s where id = %s'
-SQL_BUSCA_JOGOS = 'SELECT id, nome, categoria, console from jogo'
-SQL_CRIA_JOGO = 'INSERT into jogo (nome, categoria, console) values (%s, %s, %s)'
+SQL_DELETE_GAME = 'delete from game where id = %s'
+SQL_GAME_PER_ID = 'SELECT id, name, category, console from game where id = %s'
+SQL_USER_PER_ID = 'SELECT id, name, password from usser where id = %s'
+SQL_UPDATE_GAME = 'UPDATE game SET name=%s, category=%s, console=%s where id = %s'
+SQL_FIND_GAME = 'SELECT id, name, category, console from game'
+SQL_CREATE_GAME = 'INSERT into game (name, category, console) values (%s, %s, %s)'
 
-
-class JogoDao:
+class GameDao:
     def __init__(self, db):
         self.__db = db
 
-    def salvar(self, jogo):
+    def save(self, game):
         cursor = self.__db.connection.cursor()
 
-        if (jogo.id):
-            cursor.execute(SQL_ATUALIZA_JOGO, (jogo.nome, jogo.categoria, jogo.console, jogo.id))
+        if (game.id):
+            cursor.execute(SQL_UPDATE_GAME, (game.name, game.category, game.console, game.id))
         else:
-            cursor.execute(SQL_CRIA_JOGO, (jogo.nome, jogo.categoria, jogo.console))
-            jogo.id = cursor.lastrowid
+            cursor.execute(SQL_CREATE_GAME, (game.nome, game.category, game.console))
+            game.id = cursor.lastrowid
         self.__db.connection.commit()
-        return jogo
+        return game
 
-    def listar(self):
+    def list(self):
         cursor = self.__db.connection.cursor()
-        cursor.execute(SQL_BUSCA_JOGOS)
-        jogos = traduz_jogos(cursor.fetchall())
-        return jogos
+        cursor.execute(SQL_FIND_GAME)
+        games = convert_games(cursor.fetchall())
+        return games
 
-    def busca_por_id(self, id):
+    def find_per_id(self, id):
         cursor = self.__db.connection.cursor()
-        cursor.execute(SQL_JOGO_POR_ID, (id,))
+        cursor.execute(SQL_GAME_PER_ID, (id,))
         tupla = cursor.fetchone()
-        return Jogo(tupla[1], tupla[2], tupla[3], id=tupla[0])
+        return Game(tupla[1], tupla[2], tupla[3], id=tupla[0])
 
-    def deletar(self, id):
-        self.__db.connection.cursor().execute(SQL_DELETA_JOGO, (id, ))
+    def delete(self, id):
+        self.__db.connection.cursor().execute(SQL_DELETE_GAME, (id, ))
         self.__db.connection.commit()
 
 
-class UsuarioDao:
+class UserDao:
     def __init__(self, db):
         self.__db = db
 
-    def buscar_por_id(self, id):
+    def find_per_id(self, id):
         cursor = self.__db.connection.cursor()
-        cursor.execute(SQL_USUARIO_POR_ID, (id,))
-        dados = cursor.fetchone()
-        usuario = traduz_usuario(dados) if dados else None
-        return usuario
+        cursor.execute(SQL_USER_PER_ID, (id,))
+        data = cursor.fetchone()
+        user = convert_user(data) if data else None
+        return user
 
 
-def traduz_jogos(jogos):
-    def cria_jogo_com_tupla(tupla):
-        return Jogo(tupla[1], tupla[2], tupla[3], id=tupla[0])
-    return list(map(cria_jogo_com_tupla, jogos))
+def convert_games(games):
+    def make_game_with_tupla(tupla):
+        return Game(tupla[1], tupla[2], tupla[3], id=tupla[0])
+    return list(map(make_game_with_tupla, games))
 
 
-def traduz_usuario(tupla):
-    return Usuario(tupla[0], tupla[1], tupla[2])
+def convert_user(tupla):
+    return User(tupla[0], tupla[1], tupla[2])

@@ -1,8 +1,8 @@
-from playlib import Game, User
+from models import Game, User
 
 SQL_DELETE_GAME = 'delete from game where id = %s'
 SQL_GAME_PER_ID = 'SELECT id, name, category, console from game where id = %s'
-SQL_USER_PER_ID = 'SELECT id, name, password from usser where id = %s'
+SQL_USER_PER_ID = 'SELECT id, name, password from user where id = %s'
 SQL_UPDATE_GAME = 'UPDATE game SET name=%s, category=%s, console=%s where id = %s'
 SQL_FIND_GAME = 'SELECT id, name, category, console from game'
 SQL_CREATE_GAME = 'INSERT into game (name, category, console) values (%s, %s, %s)'
@@ -17,7 +17,7 @@ class GameDao:
         if (game.id):
             cursor.execute(SQL_UPDATE_GAME, (game.name, game.category, game.console, game.id))
         else:
-            cursor.execute(SQL_CREATE_GAME, (game.nome, game.category, game.console))
+            cursor.execute(SQL_CREATE_GAME, (game.name, game.category, game.console))
             game.id = cursor.lastrowid
         self.__db.connection.commit()
         return game

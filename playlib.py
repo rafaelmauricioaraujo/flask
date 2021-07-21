@@ -1,37 +1,27 @@
 from flask import Flask, render_template, request, redirect, session, flash, \
     url_for
+from flask.helpers import get_flashed_messages
+
+from models import Game, User
+from dao import GameDao, UserDao
+from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 app.secret_key = 'playlib_secrect'
 
-class Game:
-    def __init__(self, name, category, console):
-        self.name = name
-        self.category = category
-        self.console = console
+app.config['MYSQL_HOST'] = '127.0.0.1'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'admin'
+app.config['MYSQL_DB'] = 'playlib'
+app.config['MYSQL_PORT'] = 3306
 
-game1 = Game('Super-Mario', 'Adventure', 'NES')
-game2 = Game('Pokemon Gold', 'RPG', 'GBA')
-game3 = Game('Mortal Combat', 'Action', 'SNES')
-game_list = [game1, game2, game3]
-
-class User:
-    def __init__(self, id, name, password):
-        self.id = id
-        self.name = name
-        self.password = password
-
-user1 = User('rafael', 'Rafael', '123' )
-user2 = User('teti', 'Teti', '456' )
-user3 = User('flavio', 'Flavio', 'js')
-
-users = { user1.id: user1, 
-          user2.id: user2,
-          user3.id: user3 }
-
+db = MySQL(app)
+game_dao = GameDao(db)
+user_dao = UserDao(db)
 
 @app.route('/')
 def index():
+    game_list = game_dao.list()
     return render_template('list.html',title='Games',game_list=game_list)
 
 
@@ -49,7 +39,7 @@ def create():
     console = request.form['console']
 
     game = Game(name, category, console)
-    game_list.append(game)
+    game_dao.save(game)
 
     return redirect(url_for('index'))
 
@@ -62,8 +52,8 @@ def login():
 
 @app.route('/auth', methods=['POST'])
 def auth():
-    if request.form['user'] in users:
-        user = users[request.form['user']]
+    user = user_dao.find_per_id(request.form['user'])
+    if user:
         if user.password == request.form['password']:
             session['user_logged'] = user.id
             flash(user.name + ' logged!')

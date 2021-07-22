@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, request, redirect, session, flash, \
     url_for
 from flask.helpers import get_flashed_messages
@@ -14,6 +15,9 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'admin'
 app.config['MYSQL_DB'] = 'playlib'
 app.config['MYSQL_PORT'] = 3306
+
+app.config['UPLOAD_PATH'] = \
+    os.path.dirname(os.path.abspath(__file__)) + '/uploads'
 
 db = MySQL(app)
 game_dao = GameDao(db)
@@ -38,12 +42,14 @@ def create():
     category = request.form['category']
     console = request.form['console']
 
-    file = request.files['file']
-    file.save(f'uploads/{file.filename}')
 
     game = Game(name, category, console)
-    game_dao.save(game)
+    saved = game_dao.save(game)
 
+    file = request.files['file']
+    upload_path = app.config['UPLOAD_PATH']
+    file.save(f'{upload_path}/cover{saved.id}.jpg')
+    
     return redirect(url_for('index'))
 
 

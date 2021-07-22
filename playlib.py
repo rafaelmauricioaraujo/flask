@@ -65,6 +65,13 @@ def update():
     return redirect(url_for('index'))
     
 
+@app.route('/delete/<int:id>')
+def delete(id):
+    game_dao.delete(id)
+    flash('Game deleted')
+    return redirect(url_for('index'))
+
+
 @app.route('/login')
 def login():
     next = request.args.get('next')

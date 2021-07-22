@@ -44,6 +44,19 @@ def create():
     return redirect(url_for('index'))
 
 
+@app.route('/edit/<int:id>')
+def edit(id):
+    if 'user_logged' not in session or session['user_logged'] == None:
+        return redirect(url_for('login', next=url_for('edit')))
+    game = game_dao.find_per_id(id)
+    return render_template('edit.html', title='Edit Game', game=game)
+
+
+@app.route('/update', methods=['POST'])
+def update():
+    pass
+
+
 @app.route('/login')
 def login():
     next = request.args.get('next')

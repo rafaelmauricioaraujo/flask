@@ -1,6 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect, session, flash, \
-    url_for
+    url_for, send_from_directory
 from flask.helpers import get_flashed_messages
 
 from models import Game, User
@@ -58,7 +58,8 @@ def edit(id):
     if 'user_logged' not in session or session['user_logged'] == None:
         return redirect(url_for('login', next=url_for('edit')))
     game = game_dao.find_per_id(id)
-    return render_template('edit.html', title='Edit Game', game=game)
+    game_cover = f'cover{id}.jpg'
+    return render_template('edit.html', title='Edit Game', game=game, game_cover=game_cover)
 
 
 @app.route('/update', methods=['POST'])
@@ -107,5 +108,10 @@ def logout():
     flash('User logout')
     return redirect(url_for('index'))
 
+
+@app.route('/uploads/<filename>')
+def image(filename):
+    return send_from_directory('uploads', filename)
+    
 
 app.run(debug=True)

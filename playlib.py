@@ -54,8 +54,16 @@ def edit(id):
 
 @app.route('/update', methods=['POST'])
 def update():
-    pass
+    name = request.form['name']
+    category = request.form['category']
+    console = request.form['console']
+    id = request.form['id']
 
+    game = Game(name, category, console, id)
+    game_dao.save(game)
+
+    return redirect(url_for('index'))
+    
 
 @app.route('/login')
 def login():

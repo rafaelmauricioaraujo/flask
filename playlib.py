@@ -38,6 +38,9 @@ def create():
     category = request.form['category']
     console = request.form['console']
 
+    file = request.files['file']
+    file.save(f'uploads/{file.filename}')
+
     game = Game(name, category, console)
     game_dao.save(game)
 

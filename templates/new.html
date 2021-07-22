@@ -1,6 +1,7 @@
 {% extends "template.html"%}
 {% block content %}
-<form action="{{url_for('create')}}" method="POST">
+<form action="{{url_for('create')}}" enctype="multipart/form-data" method="POST">
+        <input type="file" name="file" accept=".jpg"></input>
         <fieldset>
           <div class="form-group">
             <label for="name">Name</label>

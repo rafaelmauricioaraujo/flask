@@ -1,30 +1,29 @@
 {% extends "template.html"%}
 {% block content %}
-<form action="{{url_for('create')}}" enctype="multipart/form-data" method="POST">
-        <figure>
-          <img src="{{ url_for('image', filename='default_cover.jpg') }}">
-          <figcaption>
-            <label>
-              <input type="file" name="file" accept=".jpg"></input>              
-            </label>
-          </figcaption>
-        </figure>
-        <fieldset>
-          <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="category">Category</label>
-            <input type="text" id="category" name="category" class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="console">Console</label>
-            <input type="text" id="console" name="console" class="form-control">
-          </div>
-          <button type="submit" class="btn btn-primary btn-save">Save</button>
-          <a class="btn btn-primary" href="{{ url_for('index') }}">Back</a>
-        </fieldset>
-      </form>
-    </div>
+  <form action="{{url_for('create')}}" enctype="multipart/form-data" method="POST">
+    <figure class="thumb col-md-4">
+      <img class="img-thumbnail" alt="cover-img" src="{{ url_for('image', filename='default_cover.jpg') }}">
+      <figcaption>
+        <label class="img-responsive">
+          <input type="file" name="file" accept=".jpg"></input>              
+        </label>
+      </figcaption>
+    </figure>        
+    <fieldset>
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="category">Category</label>
+        <input type="text" id="category" name="category" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="console">Console</label>
+        <input type="text" id="console" name="console" class="form-control">
+      </div>
+      <button type="submit" class="btn btn-primary btn-save">Save</button>
+      <a class="btn btn-primary" href="{{ url_for('index') }}">Back</a>
+    </fieldset> 
+  </form>
 {% endblock %}

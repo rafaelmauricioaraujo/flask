@@ -134,3 +134,7 @@ pyvenv.cfg
 
 # VS Code stuff
 .vscode
+
+
+# uploads file
+/uploads

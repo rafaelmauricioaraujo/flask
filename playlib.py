@@ -6,6 +6,7 @@ from flask.helpers import get_flashed_messages
 from models import Game, User
 from dao import GameDao, UserDao
 from flask_mysqldb import MySQL
+import time
 
 app = Flask(__name__)
 app.secret_key = 'playlib_secrect'
@@ -42,13 +43,13 @@ def create():
     category = request.form['category']
     console = request.form['console']
 
-
     game = Game(name, category, console)
     saved = game_dao.save(game)
 
     file = request.files['file']
     upload_path = app.config['UPLOAD_PATH']
-    file.save(f'{upload_path}/cover{saved.id}.jpg')
+    timestamp = time.time()
+    file.save(f'{upload_path}/cover{saved.id}-{timestamp}.jpg')
     
     return redirect(url_for('index'))
 
@@ -58,8 +59,8 @@ def edit(id):
     if 'user_logged' not in session or session['user_logged'] == None:
         return redirect(url_for('login', next=url_for('edit')))
     game = game_dao.find_per_id(id)
-    game_cover = f'cover{id}.jpg'
-    return render_template('edit.html', title='Edit Game', game=game, game_cover=game_cover)
+    img_cover = get_image(id)
+    return render_template('edit.html', title='Edit Game', game=game, game_cover=img_cover)
 
 
 @app.route('/update', methods=['POST'])
@@ -72,6 +73,13 @@ def update():
     game = Game(name, category, console, id)
     game_dao.save(game)
 
+    delete_cover(id)
+
+    file = request.files['file']
+    upload_path = app.config['UPLOAD_PATH']
+    timestamp = time.time()
+
+    file.save(f'{upload_path}/cover{game.id}-{timestamp}.jpg')
     return redirect(url_for('index'))
     
 
@@ -113,5 +121,15 @@ def logout():
 def image(filename):
     return send_from_directory('uploads', filename)
     
+
+def get_image(id):
+    for filename in os.listdir(app.config['UPLOAD_PATH']):
+        if f'cover{id}' in filename:
+            return filename
+
+
+def delete_cover(id):
+    file = get_image(id)
+    os.remove(os.path.join(app.config['UPLOAD_PATH'],file))
 
 app.run(debug=True)

@@ -1,32 +1,31 @@
 {% extends "template.html"%}
 {% block content %}
-<form action="{{url_for('update')}}" method="POST">
-        <figure>
-          <img src="{{ url_for('image', filename=game_cover) }}">
-          <figcaption>
-            <label>
-              <input type="file" name="file" accept=".jpg"></input>              
-            </label>
-          </figcaption>
-        </figure>
-        <fieldset>
-          <div class="form-group">
-            <input type="hidden" id="id" name="id" value="{{ game.id }}">
-          </div>
-          <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" value="{{ game.name }}" class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="category">Category</label>
-            <input type="text" id="category" name="category" value="{{ game.category }}" class="form-control">
-          </div>
-          <div class="form-group">
-            <label for="console">Console</label>
-            <input type="text" id="console" name="console" value="{{ game.console }}" class="form-control">
-          </div>
-          <button type="submit" class="btn btn-primary btn-save">Save</button>
-        </fieldset>
-      </form>
-    </div>
+  <form action="{{url_for('update')}}" method="POST" enctype="multipart/form-data">
+    <figure class="thumb col-md-4">
+      <img class="img-responsive" alt="cover" src="{{ url_for('image', filename=game_cover) }}">
+      <figcaption>
+        <label class="fileContainer" for="file"> Change cover
+          <input type="file" name="file" accept=".jpg"></input>
+        </label>
+      </figcaption>
+    </figure>
+    <fieldset>
+      <div class="form-group">
+        <input type="hidden" id="id" name="id" value="{{ game.id }}">
+      </div>
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" value="{{ game.name }}" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="category">Category</label>
+        <input type="text" id="category" name="category" value="{{ game.category }}" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="console">Console</label>
+        <input type="text" id="console" name="console" value="{{ game.console }}" class="form-control">
+      </div>
+      <button type="submit" class="btn btn-primary btn-save">Save</button>
+    </fieldset>
+  </form>
 {% endblock %}
